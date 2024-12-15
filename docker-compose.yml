@@ -1,0 +1,29 @@
+version: '3.4'
+
+services:
+  gisproxyapi:
+    container_name: gisproxyapi
+    image: ${DOCKER_REGISTRY-}gisproxy
+    build:
+      context: .
+      dockerfile: GisProxy/Dockerfile
+    depends_on:
+      - gisproxydb
+    environment:
+      - ConnectionStrings__DefaultConnection=Host=gisproxydb;Database=gisproxydb;Username=postgres;Password=password;
+
+  gisproxydb:
+    image: postgres:latest
+    container_name: gisproxydb
+    environment:
+      - POSTGRES_DB=gisproxydb
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+    ports:
+      - "5432:5432"
+    volumes:
+      - data:/var/lib/postgresql/data
+
+  
+volumes: 
+  data:
